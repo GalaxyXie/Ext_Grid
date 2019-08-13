@@ -1,0 +1,251 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gbk">
+    <title>grid</title>
+    <link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css"/>
+    <script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../ext-all.js"></script>
+    <!--    <script type="text/javascript" src="PagingMemoryProxy.js"></script>-->
+    <script type="text/javascript">
+        Ext.onReady(function () {
+            //{handleMouseDown:Ext.emptyFn}
+            var sm = new Ext.grid.CheckboxSelectionModel();
+            var cm = new Ext.grid.ColumnModel([
+                new Ext.grid.RowNumberer(),
+                sm,
+                {header: '姓名', dataIndex: 'name', sortable: 'true'},
+                {header: '班級', dataIndex: 'class'},
+                {header: '性別', dataIndex: 'sex'},
+                {header: '年齡', dataIndex: 'age'},
+                {header: '生日', dataIndex: 'birthday', renderer: Ext.util.Format.dateRenderer('Y年m月d日')},
+                {header: '頭像', dataIndex: 'avatar'},
+            ]);
+
+            var data = [
+                ['Laura', 'Suez', 'female', '22', '1997-11-22'],
+                ['Hendricks', 'Suez', 'male', '22', '1997-12-12'],
+                ['Dallin', 'Suez', 'female', '22', '1997-01-01'],
+                ['Jalon', 'Banama', 'male', '22', '1998-01-01']
+            ];
+
+            var store = new Ext.data.GroupingStore({
+                proxy: new Ext.data.MemoryProxy(data),
+                reader: new Ext.data.ArrayReader({}, [
+                    {name: 'name'},
+                    {name: 'class'},
+                    {name: 'sex'},
+                    {name: 'age'},
+                    {name: 'birthday', type: 'date', dataFormat: 'Y-m-d'},
+                    {name: 'avatar'}
+                ]),
+                sortInfo: {field: 'class'},
+                groupField: 'class'
+            });
+            store.load();
+            var panel = new Ext.form.FormPanel({
+                items: [{
+                    id: 'name',
+                    fieldLabel: '姓名',
+                    name: 'name',
+                    allowBlank: false,
+                    xtype: 'textfield',
+                }, {
+                    id: 'newClass',
+                    fieldLabel: '班級',
+                    name: 'class',
+                    allowBlank: false,
+                    xtype: 'textfield',
+                }, {
+                    id: 'sex',
+                    fieldLabel: '性別',
+                    allowBlank: false,
+                    xtype: 'radiogroup',
+                    items: [{
+                        boxLabel: 'male',
+                        name: 'sex',
+                        checked: true,
+                    }, {
+                        boxLabel: 'female',
+                        name: 'sex',
+                    }]
+                }, new Ext.form.DateField(
+                    {
+                        id: 'birth',
+                        fieldLabel: '生日',
+                        emptyText: '請選擇',
+                        format: 'Y-m-d'
+                    })],
+            });
+            const win = new Ext.Window({
+                title: '添加',
+                width: 300,
+                height: 200,
+                layout: 'fit',
+                items: [panel],
+                buttons: [{
+                    text: '確定',
+                    listeners: {
+                        'click': function (e) {
+                            var name = panel.getForm().getFieldValues().name
+                            var newClass = panel.getForm().getFieldValues().class
+                            var sex = panel.getForm().getFieldValues().sex.boxLabel
+                            var date = Ext.getCmp('birth').value
+                            const row = grid.getSelectionModel().getSelected()
+
+                            var record = {
+                                name: name,
+                                class: newClass,
+                                sex: sex,
+                                birthday: date
+                            }
+                            var p = new store.recordType(record); // create new record
+                            grid.stopEditing();
+                            if (row == undefined) {
+                                store.insert(0, p);
+                                Ext.Msg.alert('系统提示', '添加成功至第1行')
+                            } else {
+                                store.insert(row, p);
+                                Ext.Msg.alert('系统提示', '添加成功至第' + p + '行')
+                            }
+                            panel.getForm().reset();
+                            win.hide();
+                            grid.view.refresh();
+
+                        }
+                    }
+                }, {
+                    text: '取消',
+                    listeners: {
+                        'click': function (e) {
+                            win.hide();
+                        }
+                    }
+                }]
+            });
+            var grid = new Ext.grid.GridPanel({
+                loadMask: true,
+                autoHeight: true,
+                renderTo: 'grid',
+                store: store,
+                cm: cm,
+                sm: sm,
+                enableDragDrop: true,
+                view: new Ext.grid.GroupingView(),
+                viewConfig: {
+                    forceFit: true
+                },
+                tbar: ['-', {
+                    text: '添加一行',
+                    listeners: {
+                        click: function () {
+                            win.show()
+                        }
+                    }
+                }, '-', {
+                    text: '删除選中行',
+                    handler: function () {
+                        var items = grid.getSelectionModel().selections.items
+                        var size = items.length
+                        if (size === 0) {
+                            Ext.Msg.alert('系统提示', '請選中要刪除的行')
+                        } else {
+                            Ext.Msg.confirm('系统提示', '确定要删除？', function (btn) {
+                                if (btn === 'yes') {
+                                    console.log(size)
+                                    for (let i = 0; i < size; i++) {
+                                        store.remove(items);
+                                    }
+                                }
+                                grid.view.refresh();
+                            });
+                        }
+                    }
+                }],
+                // editor: new Ext.grid.GridEditor(
+                //     new Ext.form.TextField({
+                //     })
+                // ),
+                bbar: new Ext.PagingToolbar({
+                    pageSize: 1,
+                    store: store,
+                    displayInfo: true,
+                    displayMsg: '顯示第 {0} 條到第 {1} 條記錄，共 {2} 條'
+                }),
+                // listeners: {
+                //     click: function () {
+                //         var row = grid.getSelectionModel().getSelected().json;
+                //         Ext.MessageBox.alert("details", row)
+                //     }
+                // }
+            });
+            var ddrow = new Ext.dd.DropTarget(grid.container, {
+                ddGroup: 'GridDD',
+                copy: false,
+
+            });
+            var contextmenu = new Ext.menu.Menu({
+                items: [
+                    {
+                        id: 'Up',
+                        text: 'Up'
+                    }, {
+                        id: 'Down',
+                        text: 'Down'
+                    }, {
+                        id: 'Down',
+                        text: 'Down'
+                    }, {
+                        id: 'first',
+                        text: 'first'
+                    }, {
+                        id: 'last',
+                        text: 'last'
+                    }],
+                listeners: {
+                    itemclick: function (item) {
+                        var seletedGrid = grid.getSelectionModel().getSelections();//获得选中的项
+                        var index = grid.getStore().indexOf(seletedGrid[0]);//获得选中的第一项在store内的行号
+                        switch (item.id) {
+                            case 'Up':
+                                if (index > 0) {
+                                    for (i = 0; i < seletedGrid.length; i++) {
+                                        store.remove(seletedGrid[i]);
+                                        store.insert(index - 1, seletedGrid[i]);
+                                    }
+                                }
+                                break;
+                            case 'Down':
+                                for (i = 0; i < seletedGrid.length; i++) {
+                                    store.remove(seletedGrid[i]);
+                                    store.insert(index + 1, seletedGrid[i]);
+                                }
+                                break;
+                            case 'first':
+                                for (i = 0; i < seletedGrid.length; i++) {
+                                    store.remove(seletedGrid[i]);
+                                    store.insert(i, seletedGrid[i]);
+                                }
+                                break;
+                            case 'last':
+                                for (i = 0; i < seletedGrid.length; i++) {
+                                    store.remove(seletedGrid[i]);
+                                    store.insert(grid.getStore().getTotalCount()-i, seletedGrid[i]);
+                                }
+                                break;
+                        }
+                    }
+                }
+            });
+            grid.on("rowcontextmenu", function (grid, rowIndex, e) {
+                e.preventDefault();
+                grid.getSelectionModel().selectRow(rowIndex);
+                contextmenu.showAt(e.getXY());
+            });
+
+        });
+    </script>
+</head>
+<body>
+<div id="grid" style="height:300px;"></div>
+</body>
+</html>
