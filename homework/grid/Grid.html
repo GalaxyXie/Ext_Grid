@@ -13,12 +13,12 @@
             var cm = new Ext.grid.ColumnModel([
                 new Ext.grid.RowNumberer(),
                 sm,
-                {header: 'ĞÕÃû', dataIndex: 'name', sortable: 'true'},
-                {header: '°à¼‰', dataIndex: 'class'},
-                {header: 'ĞÔ„e', dataIndex: 'sex'},
-                {header: 'Äêıg', dataIndex: 'age'},
-                {header: 'ÉúÈÕ', dataIndex: 'birthday', renderer: Ext.util.Format.dateRenderer('YÄêmÔÂdÈÕ')},
-                {header: 'î^Ïñ', dataIndex: 'avatar'},
+                {header: 'å§“å', dataIndex: 'name', sortable: 'true'},
+                {header: 'ç­ç´š', dataIndex: 'class'},
+                {header: 'æ€§åˆ¥', dataIndex: 'sex'},
+                {header: 'å¹´é½¡', dataIndex: 'age'},
+                {header: 'ç”Ÿæ—¥', dataIndex: 'birthday', renderer: Ext.util.Format.dateRenderer('Yå¹´mæœˆdæ—¥')},
+                {header: 'é ­åƒ', dataIndex: 'avatar'},
             ]);
 
             var data = [
@@ -41,23 +41,23 @@
                 sortInfo: {field: 'class'},
                 groupField: 'class'
             });
-            store.load();
+
             var panel = new Ext.form.FormPanel({
                 items: [{
                     id: 'name',
-                    fieldLabel: 'ĞÕÃû',
+                    fieldLabel: 'å§“å',
                     name: 'name',
                     allowBlank: false,
                     xtype: 'textfield',
                 }, {
                     id: 'newClass',
-                    fieldLabel: '°à¼‰',
+                    fieldLabel: 'ç­ç´š',
                     name: 'class',
                     allowBlank: false,
                     xtype: 'textfield',
                 }, {
                     id: 'sex',
-                    fieldLabel: 'ĞÔ„e',
+                    fieldLabel: 'æ€§åˆ¥',
                     allowBlank: false,
                     xtype: 'radiogroup',
                     items: [{
@@ -71,19 +71,19 @@
                 }, new Ext.form.DateField(
                     {
                         id: 'birth',
-                        fieldLabel: 'ÉúÈÕ',
-                        emptyText: 'Õˆßx“ñ',
+                        fieldLabel: 'ç”Ÿæ—¥',
+                        emptyText: 'è«‹é¸æ“‡',
                         format: 'Y-m-d'
                     })],
             });
             const win = new Ext.Window({
-                title: 'Ìí¼Ó',
+                title: 'æ·»åŠ ',
                 width: 300,
                 height: 200,
                 layout: 'fit',
                 items: [panel],
                 buttons: [{
-                    text: '´_¶¨',
+                    text: 'ç¢ºå®š',
                     listeners: {
                         'click': function (e) {
                             var name = panel.getForm().getFieldValues().name
@@ -99,13 +99,15 @@
                                 birthday: date
                             }
                             var p = new store.recordType(record); // create new record
+                            console.log(p)
+                            console.log(store.indexOf(row))
                             grid.stopEditing();
                             if (row == undefined) {
                                 store.insert(0, p);
-                                Ext.Msg.alert('ÏµÍ³ÌáÊ¾', 'Ìí¼Ó³É¹¦ÖÁµÚ1ĞĞ')
+                                Ext.Msg.alert('ç³»ç»Ÿæç¤º', 'æ·»åŠ æˆåŠŸè‡³ç¬¬1è¡Œ')
                             } else {
-                                store.insert(row, p);
-                                Ext.Msg.alert('ÏµÍ³ÌáÊ¾', 'Ìí¼Ó³É¹¦ÖÁµÚ' + p + 'ĞĞ')
+                                store.insert(store.indexOf(row), p);
+                                Ext.Msg.alert('ç³»ç»Ÿæç¤º', 'æ·»åŠ æˆåŠŸè‡³ç¬¬' +store.indexOf(row) + 'è¡Œ')
                             }
                             panel.getForm().reset();
                             win.hide();
@@ -114,9 +116,10 @@
                         }
                     }
                 }, {
-                    text: 'È¡Ïû',
+                    text: 'å–æ¶ˆ',
                     listeners: {
                         'click': function (e) {
+                            panel.getForm().reset()
                             win.hide();
                         }
                     }
@@ -135,21 +138,21 @@
                     forceFit: true
                 },
                 tbar: ['-', {
-                    text: 'Ìí¼ÓÒ»ĞĞ',
+                    text: 'æ·»åŠ ä¸€è¡Œ',
                     listeners: {
                         click: function () {
                             win.show()
                         }
                     }
                 }, '-', {
-                    text: 'É¾³ıßxÖĞĞĞ',
+                    text: 'åˆ é™¤é¸ä¸­è¡Œ',
                     handler: function () {
                         var items = grid.getSelectionModel().selections.items
                         var size = items.length
                         if (size === 0) {
-                            Ext.Msg.alert('ÏµÍ³ÌáÊ¾', 'ÕˆßxÖĞÒª„h³ıµÄĞĞ')
+                            Ext.Msg.alert('ç³»ç»Ÿæç¤º', 'è«‹é¸ä¸­è¦åˆªé™¤çš„è¡Œ')
                         } else {
-                            Ext.Msg.confirm('ÏµÍ³ÌáÊ¾', 'È·¶¨ÒªÉ¾³ı£¿', function (btn) {
+                            Ext.Msg.confirm('ç³»ç»Ÿæç¤º', 'ç¡®å®šè¦åˆ é™¤ï¼Ÿ', function (btn) {
                                 if (btn === 'yes') {
                                     console.log(size)
                                     for (let i = 0; i < size; i++) {
@@ -166,23 +169,14 @@
                 //     })
                 // ),
                 bbar: new Ext.PagingToolbar({
-                    pageSize: 1,
+                    pageSize: 4,
                     store: store,
                     displayInfo: true,
-                    displayMsg: 'ï@Ê¾µÚ {0} —lµ½µÚ {1} —lÓ›ä›£¬¹² {2} —l'
+                    displayMsg: 'é¡¯ç¤ºç¬¬ {0} æ¢åˆ°ç¬¬ {1} æ¢è¨˜éŒ„ï¼Œå…± {2} æ¢'
                 }),
-                // listeners: {
-                //     click: function () {
-                //         var row = grid.getSelectionModel().getSelected().json;
-                //         Ext.MessageBox.alert("details", row)
-                //     }
-                // }
             });
-            var ddrow = new Ext.dd.DropTarget(grid.container, {
-                ddGroup: 'GridDD',
-                copy: false,
 
-            });
+            store.load()
             var contextmenu = new Ext.menu.Menu({
                 items: [
                     {
@@ -203,8 +197,8 @@
                     }],
                 listeners: {
                     itemclick: function (item) {
-                        var seletedGrid = grid.getSelectionModel().getSelections();//»ñµÃÑ¡ÖĞµÄÏî
-                        var index = grid.getStore().indexOf(seletedGrid[0]);//»ñµÃÑ¡ÖĞµÄµÚÒ»ÏîÔÚstoreÄÚµÄĞĞºÅ
+                        var seletedGrid = grid.getSelectionModel().getSelections();//è·å¾—é€‰ä¸­çš„é¡¹
+                        var index = grid.getStore().indexOf(seletedGrid[0]);//è·å¾—é€‰ä¸­çš„ç¬¬ä¸€é¡¹åœ¨storeå†…çš„è¡Œå·
                         switch (item.id) {
                             case 'Up':
                                 if (index > 0) {
@@ -229,7 +223,7 @@
                             case 'last':
                                 for (i = 0; i < seletedGrid.length; i++) {
                                     store.remove(seletedGrid[i]);
-                                    store.insert(grid.getStore().getTotalCount()-i, seletedGrid[i]);
+                                    store.insert(grid.getStore().getTotalCount() - 1, seletedGrid[i]);
                                 }
                                 break;
                         }
@@ -238,7 +232,12 @@
             });
             grid.on("rowcontextmenu", function (grid, rowIndex, e) {
                 e.preventDefault();
-                grid.getSelectionModel().selectRow(rowIndex);
+                var seletedGrid = grid.getSelectionModel().getSelections();//è·å¾—é€‰ä¸­çš„é¡¹
+                if (seletedGrid.length > 0) {
+
+                } else {
+                    grid.getSelectionModel().selectRow(rowIndex);
+                }
                 contextmenu.showAt(e.getXY());
             });
 
