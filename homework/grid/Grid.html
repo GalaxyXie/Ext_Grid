@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="../../resources/css/ext-all.css"/>
     <script type="text/javascript" src="../../adapter/ext/ext-base.js"></script>
     <script type="text/javascript" src="../../ext-all.js"></script>
+    <script type="text/javascript" src="../../examples/ux/PagingMemoryProxy.js"></script>
     <!--    <script type="text/javascript" src="PagingMemoryProxy.js"></script>-->
     <script type="text/javascript">
         Ext.onReady(function () {
@@ -13,12 +14,12 @@
             var cm = new Ext.grid.ColumnModel([
                 new Ext.grid.RowNumberer(),
                 sm,
-                {header: 'å§“å', dataIndex: 'name', sortable: 'true'},
-                {header: 'ç­ç´š', dataIndex: 'class'},
-                {header: 'æ€§åˆ¥', dataIndex: 'sex'},
-                {header: 'å¹´é½¡', dataIndex: 'age'},
-                {header: 'ç”Ÿæ—¥', dataIndex: 'birthday', renderer: Ext.util.Format.dateRenderer('Yå¹´mæœˆdæ—¥')},
-                {header: 'é ­åƒ', dataIndex: 'avatar'},
+                {header: 'ĞÕÃû', dataIndex: 'name', sortable: 'true'},
+                {header: '°à¼‰', dataIndex: 'class'},
+                {header: 'ĞÔ„e', dataIndex: 'sex'},
+                {header: 'Äêıg', dataIndex: 'age'},
+                {header: 'ÉúÈÕ', dataIndex: 'birthday', renderer: Ext.util.Format.dateRenderer('YÄêmÔÂdÈÕ')},
+                {header: 'î^Ïñ', dataIndex: 'avatar'},
             ]);
 
             var data = [
@@ -29,7 +30,7 @@
             ];
 
             var store = new Ext.data.GroupingStore({
-                proxy: new Ext.data.MemoryProxy(data),
+                proxy: new Ext.data.PagingMemoryProxy(data),
                 reader: new Ext.data.ArrayReader({}, [
                     {name: 'name'},
                     {name: 'class'},
@@ -45,19 +46,19 @@
             var panel = new Ext.form.FormPanel({
                 items: [{
                     id: 'name',
-                    fieldLabel: 'å§“å',
+                    fieldLabel: 'ĞÕÃû',
                     name: 'name',
                     allowBlank: false,
                     xtype: 'textfield',
                 }, {
                     id: 'newClass',
-                    fieldLabel: 'ç­ç´š',
+                    fieldLabel: '°à¼‰',
                     name: 'class',
                     allowBlank: false,
                     xtype: 'textfield',
                 }, {
                     id: 'sex',
-                    fieldLabel: 'æ€§åˆ¥',
+                    fieldLabel: 'ĞÔ„e',
                     allowBlank: false,
                     xtype: 'radiogroup',
                     items: [{
@@ -71,19 +72,19 @@
                 }, new Ext.form.DateField(
                     {
                         id: 'birth',
-                        fieldLabel: 'ç”Ÿæ—¥',
-                        emptyText: 'è«‹é¸æ“‡',
+                        fieldLabel: 'ÉúÈÕ',
+                        emptyText: 'Õˆßx“ñ',
                         format: 'Y-m-d'
                     })],
             });
             const win = new Ext.Window({
-                title: 'æ·»åŠ ',
+                title: 'Ìí¼Ó',
                 width: 300,
                 height: 200,
                 layout: 'fit',
                 items: [panel],
                 buttons: [{
-                    text: 'ç¢ºå®š',
+                    text: '´_¶¨',
                     listeners: {
                         'click': function (e) {
                             var name = panel.getForm().getFieldValues().name
@@ -104,10 +105,10 @@
                             grid.stopEditing();
                             if (row == undefined) {
                                 store.insert(0, p);
-                                Ext.Msg.alert('ç³»ç»Ÿæç¤º', 'æ·»åŠ æˆåŠŸè‡³ç¬¬1è¡Œ')
+                                Ext.Msg.alert('ÏµÍ³ÌáÊ¾', 'Ìí¼Ó³É¹¦ÖÁµÚ1ĞĞ')
                             } else {
                                 store.insert(store.indexOf(row), p);
-                                Ext.Msg.alert('ç³»ç»Ÿæç¤º', 'æ·»åŠ æˆåŠŸè‡³ç¬¬' +store.indexOf(row) + 'è¡Œ')
+                                Ext.Msg.alert('ÏµÍ³ÌáÊ¾', 'Ìí¼Ó³É¹¦ÖÁµÚ' +store.indexOf(row) + 'ĞĞ')
                             }
                             panel.getForm().reset();
                             win.hide();
@@ -116,7 +117,7 @@
                         }
                     }
                 }, {
-                    text: 'å–æ¶ˆ',
+                    text: 'È¡Ïû',
                     listeners: {
                         'click': function (e) {
                             panel.getForm().reset()
@@ -138,21 +139,21 @@
                     forceFit: true
                 },
                 tbar: ['-', {
-                    text: 'æ·»åŠ ä¸€è¡Œ',
+                    text: 'Ìí¼ÓÒ»ĞĞ',
                     listeners: {
                         click: function () {
                             win.show()
                         }
                     }
                 }, '-', {
-                    text: 'åˆ é™¤é¸ä¸­è¡Œ',
+                    text: 'É¾³ıßxÖĞĞĞ',
                     handler: function () {
                         var items = grid.getSelectionModel().selections.items
                         var size = items.length
                         if (size === 0) {
-                            Ext.Msg.alert('ç³»ç»Ÿæç¤º', 'è«‹é¸ä¸­è¦åˆªé™¤çš„è¡Œ')
+                            Ext.Msg.alert('ÏµÍ³ÌáÊ¾', 'ÕˆßxÖĞÒª„h³ıµÄĞĞ')
                         } else {
-                            Ext.Msg.confirm('ç³»ç»Ÿæç¤º', 'ç¡®å®šè¦åˆ é™¤ï¼Ÿ', function (btn) {
+                            Ext.Msg.confirm('ÏµÍ³ÌáÊ¾', 'È·¶¨ÒªÉ¾³ı£¿', function (btn) {
                                 if (btn === 'yes') {
                                     console.log(size)
                                     for (let i = 0; i < size; i++) {
@@ -169,10 +170,10 @@
                 //     })
                 // ),
                 bbar: new Ext.PagingToolbar({
-                    pageSize: 4,
+                    pageSize: 2,
                     store: store,
                     displayInfo: true,
-                    displayMsg: 'é¡¯ç¤ºç¬¬ {0} æ¢åˆ°ç¬¬ {1} æ¢è¨˜éŒ„ï¼Œå…± {2} æ¢'
+                    displayMsg: 'ï@Ê¾µÚ {0} —lµ½µÚ {1} —lÓ›ä›£¬¹² {2} —l'
                 }),
             });
 
@@ -197,8 +198,8 @@
                     }],
                 listeners: {
                     itemclick: function (item) {
-                        var seletedGrid = grid.getSelectionModel().getSelections();//è·å¾—é€‰ä¸­çš„é¡¹
-                        var index = grid.getStore().indexOf(seletedGrid[0]);//è·å¾—é€‰ä¸­çš„ç¬¬ä¸€é¡¹åœ¨storeå†…çš„è¡Œå·
+                        var seletedGrid = grid.getSelectionModel().getSelections();//»ñµÃÑ¡ÖĞµÄÏî
+                        var index = grid.getStore().indexOf(seletedGrid[0]);//»ñµÃÑ¡ÖĞµÄµÚÒ»ÏîÔÚstoreÄÚµÄĞĞºÅ
                         switch (item.id) {
                             case 'Up':
                                 if (index > 0) {
@@ -232,7 +233,7 @@
             });
             grid.on("rowcontextmenu", function (grid, rowIndex, e) {
                 e.preventDefault();
-                var seletedGrid = grid.getSelectionModel().getSelections();//è·å¾—é€‰ä¸­çš„é¡¹
+                var seletedGrid = grid.getSelectionModel().getSelections();//»ñµÃÑ¡ÖĞµÄÏî
                 if (seletedGrid.length > 0) {
 
                 } else {
